@@ -1,0 +1,27 @@
+{% extends "product/base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% block content %}
+        {% if messages %}
+            {% for msg in messages %}
+                {% if msg.tags == 'error' %}
+                    <p style="background-color: red; color: white">{{msg}}</p>
+                {% else %}
+                <p style="color: blue">{{msg}}</p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        <form action="{% url 'product:add_product' %}" method="POST" enctype="multipart/form-data">
+            {%  csrf_token %}
+            {{form.as_p}}
+            <input type="submit" value="Upload">
+        </form>
+    {% endblock %}
+</body>
+</html>
