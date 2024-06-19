@@ -1,0 +1,61 @@
+{% extends "product/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<h1>SPECIAL WATCHES ONLINE STORE</h1>
+<div class="container">
+    
+    {% if messages %}
+        {% for msg in messages %}
+            {% if msg.tags == 'error' %}
+                <p style="background-color: red; color: white">{{msg}}</p>
+            {% else %}
+            <p style="color: blue">{{msg}}</p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    {% for product in products %}
+        <div class="product">
+            <img src="{{product.image.url}}" alt="{{product.name}}">
+            <div class="desc">
+                <small style="display: none">{{product.id}}</small>
+                <small>{{product.price}}</small>
+                <p>{{product.name}}</p>
+                <p>{{product.description}}.</p>
+                <button id="addToCart" data-id="{{product.id}}">Add To Cart</button>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+    console.log("loaded");
+    const addToCart = document.querySelectorAll("#addToCart");
+    const checkout = document.querySelector("#checkout");
+    const products = document.querySelectorAll(".cart product");
+
+    addToCart.forEach(element=>{
+        element.addEventListener('click', async(e)=>{
+            productId = e.target.getAttribute("data-id")
+            try{
+                const data = await fetch("{% url 'product:add_to_cart' %}",{
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: new URLSearchParams({
+                        'product_id': productId
+                    })
+                })
+                //cart = await data.json()
+                console.log(await data.json())
+            }catch(error){
+                console.log(error)
+            }
+           
+        })
+    })
+</script>
+{% endblock %}
