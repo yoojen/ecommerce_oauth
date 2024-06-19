@@ -1,0 +1,24 @@
+{% extends "product/base.html" %}
+{% block content %}
+    <div class="container">
+        {% if messages %}
+            {% for msg in messages %}
+                {% if msg.tags == 'error' %}
+                    <p style="background-color: red; color: white">{{msg}}</p>
+                {% else %}
+                <p style="color: blue">{{msg}}</p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        <div class="cart">
+            MY CART
+            {% for item in cart %}
+                {% for k, v in item.items %}
+                    <h3>{{k}}: {{v}}</h3>
+                    <div class="border-bottom"></div>
+                {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
