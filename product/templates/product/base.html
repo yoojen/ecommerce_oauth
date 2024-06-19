@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    {% if title %}
+        {{title}}
+    {% else %}
+        <title>Ecommerce - Oauth</title>
+    {% endif %}
+
+</head>
+<body>
+    <nav>
+        <div class="left-nav">
+            <a href="#">Home</a>
+        </div>
+        <div class="right-nav">
+            <a href="">Login</a>
+            <form method="POST">
+                {%  csrf_token %}
+                <input type="submit" value="Logout">
+            </form>
+        </div>
+    </nav>
+    {% block content %}
+    
+    {% endblock %}
+</body>
+</html>
