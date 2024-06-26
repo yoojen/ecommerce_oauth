@@ -10,11 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+Env=load_dotenv(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -37,8 +40,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "corsheaders",
+    'django.contrib.sites',
     'product',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google'
 ]
 
 MIDDLEWARE = [
@@ -50,14 +57,51 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/accounts/login'
+
+SITE_ID=1
 ROOT_URLCONF = 'ecommerce_oauth.urls'
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': '424659524342-2bdseicd6rlfvvvkh98j1kquqgnekoja.apps.googleusercontent.com',
+            'secret': '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',
+            'key': ''
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT=587
+EMAIL_HOST_USER='eugeneemma7@gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_HOST_PASSWORD = os.getenv('GOOLE_DJANGO_APP1_PSD', None)
+DEFAULT_FROM_EMAIL='eugeneemma7@gmail.com'
+EMAIL_TIMEOUT = 60
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
+
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -73,6 +117,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'ecommerce_oauth.wsgi.application'
 
 AUTH_USER_MODEL='product.User'
+USER_MODEL_USERNAME_FIELD = 'email'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -84,6 +129,12 @@ DATABASES = {
     }
 }
 
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -120,20 +171,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-MEDIA_ROOT = BASE_DIR / 'static/'
+MEDIA_ROOT = BASE_DIR / 'media/'
 MEDIA_URL = 'media/'
-
-import os
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
-)
 
 STATIC_URL = '/static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",]
