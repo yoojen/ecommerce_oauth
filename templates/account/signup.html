@@ -1,0 +1,36 @@
+{% extends "account/base.html" %}
+{% load static %}
+{% load socialaccount %}
+{% block content %}
+<div class="container">
+    <h1>Sign Up</h1>
+        <p>Already have an account? Then please <a href="{%url 'account_login' %}">sign in</a>.
+    {% if not SOCIALACCOUNT_ONLY %}
+        <form action="{% url 'account_signup' %}" method="post">
+            {%csrf_token%}
+            <div class="each-tag">
+                <label for="email">Email</label>
+                {{form.email}}
+            </div>
+            <div class="each-tag">
+                <label for="password1">Enter password</label>
+                {{form.password1}}
+            </div>
+            <div class="each-tag">
+                <label for="password2">Enter password again</label>
+                {{form.password2}}
+            </div>
+            
+            <button type="submit">Sign In</button>
+        </form>
+    {% endif %}
+   {% if SOCIALACCOUNT_ENABLED %}
+        <p>Continue with</p>
+        <div class="google-provider">
+            <a href="{% provider_login_url 'google' %}">
+                <img src="{% static 'images/logo_g_2.png'%}" alt="">
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock content %}
