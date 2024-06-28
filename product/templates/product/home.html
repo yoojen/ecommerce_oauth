@@ -4,17 +4,17 @@
 {% block content %}
 
 <h1>SPECIAL WATCHES ONLINE STORE</h1>
+{% if messages %}
+    {% for msg in messages %}
+        {% if msg.tags == 'error' %}
+            <p style="background-color: red; color: white">{{msg}}</p>
+        {% else %}
+        <p style="color: blue">{{msg}}</p>
+        {% endif %}
+    {% endfor %}
+{% endif %}
 <div class="container">
     
-    {% if messages %}
-        {% for msg in messages %}
-            {% if msg.tags == 'error' %}
-                <p style="background-color: red; color: white">{{msg}}</p>
-            {% else %}
-            <p style="color: blue">{{msg}}</p>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
     {% for product in products %}
         <div class="product">
             <img src="{{product.image.url}}" alt="{{product.name}}">
@@ -30,7 +30,6 @@
 </div>
 
 <script>
-    console.log("loaded");
     const addToCart = document.querySelectorAll("#addToCart");
     const checkout = document.querySelector("#checkout");
     const products = document.querySelectorAll(".cart product");
