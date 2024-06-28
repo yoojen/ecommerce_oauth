@@ -66,37 +66,6 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/accounts/login'
-
-SITE_ID=1
-ROOT_URLCONF = 'ecommerce_oauth.urls'
-
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': '424659524342-2bdseicd6rlfvvvkh98j1kquqgnekoja.apps.googleusercontent.com',
-            'secret': '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',
-            'key': ''
-        },
-        'SCOPE': [
-            'profile',
-            'email',
-        ],
-        'AUTH_PARAMS': {
-            'access_type': 'online',
-        }
-    }
-}
-
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT=587
-EMAIL_HOST_USER='eugeneemma7@gmail.com'
-EMAIL_USE_TLS = True
-EMAIL_HOST_PASSWORD = os.getenv('GOOLE_DJANGO_APP1_PSD', None)
-DEFAULT_FROM_EMAIL='eugeneemma7@gmail.com'
-EMAIL_TIMEOUT = 60
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -170,11 +139,45 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': os.environ.get('GOOGLE_ID', None),
+            'secret': os.environ.get('GOOGLE_SECRET_KEY', None),
+            'key': ''
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+SITE_ID = 1
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/accounts/login'
+
+ROOT_URLCONF = 'ecommerce_oauth.urls'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'eugeneemma7@gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_HOST_PASSWORD = os.getenv('GOOLE_DJANGO_APP1_PSD', None)
+DEFAULT_FROM_EMAIL = 'eugeneemma7@gmail.com'
+EMAIL_TIMEOUT = 60
+
 STATIC_URL = 'static/'
 MEDIA_ROOT = BASE_DIR / 'media/'
 MEDIA_URL = 'media/'
 
 STATIC_URL = '/static/'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
