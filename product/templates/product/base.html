@@ -15,14 +15,18 @@
 <body>
     <nav>
         <div class="left-nav">
-            <a href="#">Home</a>
+            <a href="{% url 'product:home' %}">Home</a>
         </div>
         <div class="right-nav">
-            <a href="">Login</a>
-            <form method="POST">
-                {%  csrf_token %}
-                <input type="submit" value="Logout">
-            </form>
+            {% if user.is_authenticated %}
+                <small>{{user.email}} </small>
+                <form method="POST" action="{% url 'account_logout' %}">
+                    {%  csrf_token %}
+                    <input type="submit" value="Logout">
+                </form>
+            {% else %}
+                <a href="{% url 'account_login' %}">Login</a>
+            {% endif %}
         </div>
     </nav>
     {% block content %}
