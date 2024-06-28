@@ -56,11 +56,10 @@ def add_to_cart(request):
         messages.error(request=request, message="Item not added to cart, try again")
         return JsonResponse({"error": "No product found"}, status=404)
 
-
+from allauth.account.views import LoginView
 def view_cart(request):
     template = 'product/cart.html'
     cart = request.session.get('cart')
-    print(cart)
     return render(request=request, template_name=template, context={'cart': cart.values()})
 
 def check_out(request):
