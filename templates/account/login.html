@@ -1,0 +1,29 @@
+{% extends "account/base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Sign In</h1>
+    {% if not SOCIALACCOUNT_ONLY %}
+        <p>If you have not created an account yet, then please <a href="{% url 'account_signup' %}">sign up</a> first.</p>
+        {% url 'account_login' as login_url %}
+        <form action="{% url 'account_login' %}" method="post">
+            {%csrf_token%}
+            <div class="each-tag">
+                <label for="login">Email</label>
+                {{form.login}}
+            </div>
+            <div class="each-tag">
+                <label for="password">Password</label>
+                {{form.password}}
+            </div>
+            <button type="submit">Sign In</button>
+        </form>
+    {% endif %}
+    {% if LOGIN_BY_CODE_ENABLED %}
+        <h1>WITH CODE ENABLED</h1>
+    {% endif %}
+    {% if SOCIALACCOUNT_ENABLED %}
+        {% include "../socialaccount/snippets/login.html" %}
+    {% endif %}
+</div>
+{% endblock content %}

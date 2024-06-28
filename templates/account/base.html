@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oauth</title>
+    <style>
+        body{
+            background: linear-gradient(106deg, #e0eafc,#cfdef3);;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .container{
+            background-color: aliceblue;
+            padding: 20px;
+            margin-top: 40px;
+            border-radius: 5px;
+        }
+        form{
+            width: 350px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0px 2px #000;
+            color: black;
+        }
+        .each-tag{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .each-tag input{
+            padding: 5px;
+            width: 70%;
+            color: grey;
+        }
+        form button{
+            outline: none;
+            border: none;
+            width: 40%;
+            margin-left: 50%;
+            transform: translateX(-50%);
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    {% block content %}
+    {% if messages %}
+        {% for msg in messages %}
+            <small>{{msg}}</small>
+        {% endfor %}
+    
+    {% endif %}
+    {% endblock %}
+</body>
+</html>
