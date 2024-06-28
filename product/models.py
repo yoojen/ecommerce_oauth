@@ -23,10 +23,9 @@ class UserCustomerManager(UserManager):
         if extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser must have is_superuser=True.")
         return self.create_user(email, password, **extra_fields)
-    
+    from allauth.account.utils import send_email_confirmation
 
 class User(AbstractUser):
-    username=None
     email = models.EmailField(unique=True, null=False)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
