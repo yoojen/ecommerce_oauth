@@ -59,8 +59,8 @@ def add_to_cart(request):
 from allauth.account.views import LoginView
 def view_cart(request):
     template = 'product/cart.html'
-    cart = request.session.get('cart')
-    return render(request=request, template_name=template, context={'cart': cart.values()})
+    cart = request.session.get('cart', None)
+    return render(request=request, template_name=template, context={'cart': cart.values() if cart else None})
 
 def check_out(request):
     return HttpResponse({"message": "recieved"})
