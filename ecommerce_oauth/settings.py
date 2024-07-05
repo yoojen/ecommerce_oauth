@@ -143,15 +143,15 @@ USE_TZ = True
 SOCIALACCOUNT_PROVIDERS = {
     'github': {
         'APP': {
-            'client_id': "Ov23li0FZFeXYAJ5L1Kb",
-            'secret': "29ec36ee89acc9bcfbb90934d9d43b7c08b3e8a7",
+            'client_id': "",
+            'secret': "",
             'key': ''
         },
     },
     'google': {
         'APP': {
-            'client_id': "424659524342-2bdseicd6rlfvvvkh98j1kquqgnekoja.apps.googleusercontent.com",
-            'secret': "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",
+            'client_id': "",
+            'secret': "",
             'key': ''
         },
         'SCOPE': [
