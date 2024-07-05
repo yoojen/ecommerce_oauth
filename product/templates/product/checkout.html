@@ -1,0 +1,107 @@
+{% extends "product/base.html" %}
+{% block content %}
+    {% if messages %}
+        {% for msg in messages %}
+            {% if msg.tags == 'error' %}
+                <p style="background-color: red; color: white">{{msg}}</p>
+            {% else %}
+            <p style="color: blue">{{msg}}</p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <form action="{% url 'product:checkout' %}" method="POST" 
+        enctype="application/x-www-form-urlencoded">
+        {%  csrf_token %}
+        {{form.as_p}}
+        <h2>{{data.total_price}}</h2>
+        <input type="submit" value="Checkout">
+    </form>
+    <script>
+        const province= document.getElementById('id_province')
+        const district= document.getElementById('id_district')
+        const sector= document.getElementById('id_sector')
+       
+        BASE_URL = "https://rwanda.p.rapidapi.com"
+        API_KEY = "8ca3b05e70mshc1f25f7dc32f493p11d779jsnff4bbd09c9d0"
+        p_headers = {
+            "x-rapidapi-key": API_KEY,
+            "x-rapidapi-host": "rwanda.p.rapidapi.com"
+        }
+        let fetchedData = null;
+
+        async function getData() {
+            const apiUrl = `${BASE_URL}/provinces`
+            try {
+                const response = await fetch(apiUrl, {headers: p_headers});
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                fetchedData = await response.json();
+                provinceData(fetchedData);
+            } catch (error) {
+                console.error('There has been a problem with your fetch operation:', error);
+            }
+        }
+
+        function provinceData(data) {
+            data.data.map((item)=>{
+                province.innerHTML +=`
+                    <option value="${item}">${item}</option>
+                `
+            })
+        }
+        province.addEventListener('change', ()=>{
+            getDistrictData(province.value)
+
+        })
+
+        async function getDistrictData(province){
+            const url = `https://rwanda.p.rapidapi.com/districts?p=${province}`;
+            try {
+                const response = await fetch(url, {headers: p_headers});
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                fetchedData = await response.json();
+                districtData(fetchedData);
+            } catch (error) {
+                console.error('There has been a problem with your fetch operation:', error);
+            }
+        }
+
+        function districtData(data) {
+            data.data.map((item)=>{
+                district.innerHTML +=`
+                    <option value="${item}">${item}</option>
+                `
+            })
+        }
+
+        district.addEventListener('change', ()=>{
+            getSectorData(province.value, district.value)
+
+        })
+
+        async function getSectorData(province, district){
+            const url = `https://rwanda.p.rapidapi.com/sectors?p=${province}&d=${district}`
+            try {
+                const response = await fetch(url, {headers: p_headers});
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                fetchedData = await response.json();
+                sectorData(fetchedData);
+            } catch (error) {
+                console.error('There has been a problem with your fetch operation:', error);
+            }
+        }
+        function sectorData(data) {
+            data.data.map((item)=>{
+                sector.innerHTML +=`
+                    <option value="${item}">${item}</option>
+                `
+            })
+        }
+    getData();
+    </script> 
+{% endblock %}
