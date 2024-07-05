@@ -14,7 +14,7 @@
     {% endfor %}
 {% endif %}
 <div class="container">
-    
+    <a href="{% url 'product:view_cart' %}">Cart</a>
     {% for product in products %}
         <div class="product">
             <img src="{{product.image.url}}" alt="{{product.name}}">
@@ -22,7 +22,12 @@
                 <small style="display: none">{{product.id}}</small>
                 <small>{{product.price}}</small>
                 <p>{{product.name}}</p>
-                <p>{{product.description}}.</p>
+                <p>
+                    {% if product.description %}
+                        {{product.description}}.
+                    {% else %}
+                        -
+                {% endif %}</p>
                 <button id="addToCart" data-id="{{product.id}}">Add To Cart</button>
             </div>
         </div>

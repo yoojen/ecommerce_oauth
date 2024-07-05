@@ -24,12 +24,8 @@
         <h1>WITH CODE ENABLED</h1>
     {% endif %}
     {% if SOCIALACCOUNT_ENABLED %}
-        <p>Continue with</p>
-        <div class="google-provider">
-            <a href="{% provider_login_url 'google' %}">
-                <img src="{% static 'images/logo_g_2.png'%}" alt="">
-            </a>
-        </div>
+     {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+       
     {% endif %}
 </div>
 {% endblock content %}
