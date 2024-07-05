@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'allauth.socialaccount.providers.google'
+    'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.github',
 ]
 
 MIDDLEWARE = [
@@ -140,10 +141,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 SOCIALACCOUNT_PROVIDERS = {
+    'github': {
+        'APP': {
+            'client_id': "Ov23li0FZFeXYAJ5L1Kb",
+            'secret': "29ec36ee89acc9bcfbb90934d9d43b7c08b3e8a7",
+            'key': ''
+        },
+    },
     'google': {
         'APP': {
-            'client_id': os.environ.get('GOOGLE_ID', None),
-            'secret': os.environ.get('GOOGLE_SECRET_KEY', None),
+            'client_id': "424659524342-2bdseicd6rlfvvvkh98j1kquqgnekoja.apps.googleusercontent.com",
+            'secret': "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",
             'key': ''
         },
         'SCOPE': [
@@ -152,8 +160,9 @@ SOCIALACCOUNT_PROVIDERS = {
         ],
         'AUTH_PARAMS': {
             'access_type': 'online',
-        }
-    }
+        },
+    },
+    
 }
 
 SITE_ID = 1
