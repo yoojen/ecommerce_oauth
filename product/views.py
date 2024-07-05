@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.shortcuts import redirect, render, HttpResponse
 from django.contrib import messages
-from .forms import UploadForm
+from .forms import CheckOutForm, UploadForm
 from .models import Product
 
 def home(request):
@@ -23,15 +23,20 @@ def home(request):
 def add_product(request):
     template = 'product/add_product.html'
     form = UploadForm()
-    if request.method == 'POST':
-        upload_form = UploadForm(request.POST, request.FILES)
-        if upload_form.is_valid():
-            upload_form.save()
-            messages.success(request, "New Product Uploaded successfully")
-            return redirect('product:home')
-        messages.error(request, 'Something went wrong')
-        return render(request, 'product/home.html', {'form': form})
-    return render(request=request, template_name=template, context={'form': form})
+    try:
+        if request.method == 'POST':
+            upload_form = UploadForm(request.POST, request.FILES)
+            if upload_form.is_valid():
+                upload_form.save()
+                messages.success(request, "New Product Uploaded successfully")
+                return redirect('product:home')
+            else:
+                messages.error(request, 'Something went wrong')
+                return render(request, 'product/home.html', {'form': form})
+        return render(request=request, template_name=template, context={'form': form})
+    except Exception as e:
+        print(e)
+        return HttpResponse({})
 
 
 def add_to_cart(request):
@@ -40,15 +45,19 @@ def add_to_cart(request):
         product = Product.objects.get(id=product_id)
         cart = request.session.get('cart', {})
         if product_id not in cart.keys():
+            print(f"{product_id} not found in {cart.keys()}")
             cart[product_id] = {
                 'name': product.name,
                 'price': str(product.price),
                 'quantity': 1
             }
-        else:            
+        else:
             cart[product_id]['quantity'] = int(cart[product_id]['quantity']) + 1
+            print(cart[product_id]['price'], int(
+                cart[product_id]['quantity']))
             cart[product_id]['price'] =\
-                    str(int(cart[product_id]['price']) + int(product.price))
+                (int(cart[product_id]['price']) *
+                 int(cart[product_id]['quantity']))
 
         request.session['cart'] = cart
         return JsonResponse({"message": "recevied"})
@@ -56,11 +65,29 @@ def add_to_cart(request):
         messages.error(request=request, message="Item not added to cart, try again")
         return JsonResponse({"error": "No product found"}, status=404)
 
-from allauth.account.views import LoginView
 def view_cart(request):
     template = 'product/cart.html'
     cart = request.session.get('cart', None)
-    return render(request=request, template_name=template, context={'cart': cart.values() if cart else None})
+    products_to_remove = []
+    for product in cart.keys():
+        product_from_db = Product.objects.filter(id=int(product)).first()
+        if not product_from_db:
+            products_to_remove.append(product)
+    for product in products_to_remove:
+        del request.session['cart'][product]
+    request.session.modified = True
+
+    return render(request=request, template_name=template, 
+                  context={'cart': request.session['cart'].values() if cart else None})
 
 def check_out(request):
-    return HttpResponse({"message": "recieved"})
+    form = CheckOutForm()
+    session_data = request.session['cart']   
+    prices = [item.get('price') for item in list(session_data.values())]
+    product_sum = sum(prices)
+    data = {
+        'total_price': product_sum,
+    }
+    return render(request, 'product/checkout.html', {'data': data,
+                                                     'form': form})
+
