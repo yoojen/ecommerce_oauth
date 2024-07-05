@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
+import requests
+
 
 class UserCustomerManager(UserManager):
     def create_user(self, email, password, **extra_fields):
@@ -50,7 +52,7 @@ class Product(models.Model):
     category=models.ForeignKey(Category, on_delete=models.CASCADE)
     price=models.CharField(max_length=256)
     date_added=models.DateTimeField(auto_now_add=True)
-    description=models.TextField()
+    description=models.TextField(null=True)
     image=models.ImageField(upload_to='images/')
 
 
@@ -59,3 +61,10 @@ class Cart(models.Model):
     quantity=models.IntegerField()
     user=models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
     date_added=models.DateTimeField(auto_now_add=True)
+
+
+class BillingAddress(models.Model):
+    province = models.CharField(max_length=256, choices=())
+    district = models.CharField(max_length=256, choices=())
+    sector = models.CharField(max_length=256, choices=())
+    date_created = models.DateTimeField(auto_now_add=True)

@@ -3,3 +3,6 @@ __pycache__
 static/images
 db.sqlite3
 migrations
+settings.py
+media/*
+product/static/images/*
