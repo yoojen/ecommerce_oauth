@@ -67,7 +67,7 @@ def add_to_cart(request):
 
 def view_cart(request):
     template = 'product/cart.html'
-    cart = request.session.get('cart', None)
+    cart = request.session.get('cart', {})
     products_to_remove = []
     for product in cart.keys():
         product_from_db = Product.objects.filter(id=int(product)).first()
@@ -82,12 +82,14 @@ def view_cart(request):
 
 def check_out(request):
     form = CheckOutForm()
-    session_data = request.session['cart']   
-    prices = [item.get('price') for item in list(session_data.values())]
+    session_data = request.session.get('cart', {})
+    prices = [int(item.get('price')) for item in list(session_data.values())]
     product_sum = sum(prices)
     data = {
         'total_price': product_sum,
     }
-    return render(request, 'product/checkout.html', {'data': data,
+
+    return render(request, 'product/checkout.html', {'data': data if data else None,
                                                      'form': form})
 
+from allauth.socialaccount import adapter
