@@ -2,12 +2,11 @@
 {% load socialaccount %}
 {% load static %}
 {% block content %}
-<div class="container">
+<div class="other-container">
     <h1>Sign In</h1>
     {% if not SOCIALACCOUNT_ONLY %}
-        <p>If you have not created an account yet, then please <a href="{% url 'account_signup' %}">sign up</a> first.</p>
         {% url 'account_login' as login_url %}
-        <form action="{% url 'account_login' %}" method="post">
+        <form action="{% url 'account_login' %}" method="post" id="login-form">
             {%csrf_token%}
             <div class="each-tag">
                 <label for="login">Email</label>
@@ -18,14 +17,25 @@
                 {{form.password}}
             </div>
             <button type="submit">Sign In</button>
+            <p>If you have not created an account yet, then please <a href="{% url 'account_signup' %}">sign up</a> first.</p>
+
         </form>
     {% endif %}
     {% if LOGIN_BY_CODE_ENABLED %}
         <h1>WITH CODE ENABLED</h1>
     {% endif %}
-    {% if SOCIALACCOUNT_ENABLED %}
-     {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
-       
-    {% endif %}
+    <div class="google-provider">
+        Continue with
+        <form action="/accounts/google/login/ " method="POST" style="background-color:transparent;
+        box-shadow: none; padding: 0; width: auto">
+            {% csrf_token %}
+            <button type="submit" style="margin-left: 0%;width: 100px; background-color: white">Google</button>
+        </form>
+        <form action="/accounts/github/login/ " method="POST" style="background-color:transparent;
+        box-shadow: none; padding: 0; width: auto">
+            {% csrf_token %}
+            <button type="submit" style="margin-left: 0%;width: 100px; background-color: white">Github</button>
+        </form>
+    </div>
 </div>
 {% endblock content %}

@@ -14,7 +14,6 @@
     {% endfor %}
 {% endif %}
 <div class="container">
-    <a href="{% url 'product:view_cart' %}">Cart</a>
     {% for product in products %}
         <div class="product">
             <img src="{{product.image.url}}" alt="{{product.name}}">

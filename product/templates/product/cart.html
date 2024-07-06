@@ -1,6 +1,6 @@
 {% extends "product/base.html" %}
 {% block content %}
-    <div class="container">
+    <div class="other-container">
         {% if messages %}
             {% for msg in messages %}
                 {% if msg.tags == 'error' %}
@@ -11,13 +11,17 @@
             {% endfor %}
         {% endif %}
         <div class="cart">
-            MY CART
+            <h1>MY CART</h1>
             {% for item in cart %}
-                {% for k, v in item.items %}
-                    <h3>{{k}}: {{v}}</h3>
-                    <div class="border-bottom"></div>
-                {% endfor %}
+                <div class="cart-items">
+                    {% for k, v in item.items %}
+                        <div class="cart-item">
+                            <h3>{{k}}: {{v}}</h3>
+                        </div>
+                    {% endfor %}
+                </div>
             {% endfor %}
         </div>
+        <small>Go to <a href="{% url 'product:checkout' %}">checkout </a>page</small>
     </div>
 {% endblock %}

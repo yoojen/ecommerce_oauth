@@ -10,7 +10,6 @@
     {% else %}
         <title>Ecommerce - Oauth</title>
     {% endif %}
-
 </head>
 <body>
     <nav>
@@ -27,6 +26,7 @@
             {% else %}
                 <a href="{% url 'account_login' %}">Login</a>
             {% endif %}
+            <a href="{% url 'product:view_cart' %}">Cart</a>
         </div>
     </nav>
     {% block content %}
