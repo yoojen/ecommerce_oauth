@@ -143,15 +143,25 @@ USE_TZ = True
 SOCIALACCOUNT_PROVIDERS = {
     'github': {
         'APP': {
+<<<<<<< HEAD
             'client_id': os.environ.get("GTIHUB_KEY"),
             'secret': os.environ.get("GITHUB_SECRET"),
+=======
+            'client_id': "",
+            'secret': "",
+>>>>>>> ece147a8c9e1932b3e04e4a642ac913bda7611cb
             'key': ''
         },
     },
     'google': {
         'APP': {
+<<<<<<< HEAD
             'client_id': os.environ.get("GOOGLE_ID"),
             'secret': os.environ.get("GOOGLE_SECRET_KEY"),
+=======
+            'client_id': "",
+            'secret': "",
+>>>>>>> ece147a8c9e1932b3e04e4a642ac913bda7611cb
             'key': ''
         },
         'SCOPE': [
