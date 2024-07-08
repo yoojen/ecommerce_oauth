@@ -16,19 +16,25 @@
         {%  csrf_token %}
         <div class="each-tag">
             <label for="id_province">
-                {{form.province}}
+                Province
             </label>
+            {{c_form.province}}
         </div>
         <div class="each-tag">
             <label for="id_district">
-                {{form.district}}
+                District
             </label>
+            {{c_form.district}}
         </div>
         <div class="each-tag">
             <label for="id_sector">
-                {{form.sector}}
+                Sector
             </label>
-        </div>        <h2>{{data.total_price}}</h2>
+            {{c_form.sector}}
+        </div>
+        <h2>{{data.total_price}}</h2>
+
+        {{o_form}}
         <button type="submit">Checkout</button>
     </form>
 </div>
