@@ -1,8 +1,10 @@
 from django.http import JsonResponse
 from django.shortcuts import redirect, render, HttpResponse
 from django.contrib import messages
-from .forms import CheckOutForm, UploadForm
-from .models import Product
+from django.core.mail import send_mail
+from django.conf import settings
+from .forms import CheckOutForm, OrderForm, UploadForm
+from .models import BillingAddress, Order, Product
 
 def home(request):
     template = 'product/home.html'
@@ -81,15 +83,44 @@ def view_cart(request):
                   context={'cart': request.session['cart'].values() if cart else None})
 
 def check_out(request):
-    form = CheckOutForm()
+    c_form = CheckOutForm()
     session_data = request.session.get('cart', {})
     prices = [int(item.get('price')) for item in list(session_data.values())]
     product_sum = sum(prices)
+    if product_sum == 0:
+        messages.warning(request, "Place order before checkout")
+        return render(request, 'product/checkout.html', {'data': 0,
+                                                         'c_form': c_form})
     data = {
         'total_price': product_sum,
     }
 
+    if request.method == 'POST':
+        c_form = CheckOutForm(request.POST)
+        obj = c_form
+        c_form.data["user_id"]=1
+        # o_form = OrderForm(request.POST)
+        print("ABove validation")
+        if c_form.is_valid():
+            c_form.save()
+            request.session['cart'] = {}
+            request.session.modified = True
+            data = {}
+            messages.success(request, "Order Placeed successfully")
+            send_mail("Order information", f"{request.build_absolute_uri() } \
+                    want to inform you that your order has been placed successfully.\
+                    It may take up two 24 hours to get your order dispatched.\
+                    Thank your working with us!", settings.DEFAULT_FROM_EMAIL, ["yoojen28@gmail.com"])
+        else:
+            messages.error(request, "Something went wrong")
     return render(request, 'product/checkout.html', {'data': data if data else None,
-                                                     'form': form})
+                                                     'c_form': c_form})
 
-from allauth.socialaccount import adapter
+def orders(request):
+    from django.shortcuts import get_list_or_404
+    if request.user.is_authenticated:
+        orders = Order.objects.filter(user=request.user).all()
+        print(orders)
+        return HttpResponse({"message": str(orders)})
+    else:
+        return HttpResponse({"message": "error"})
