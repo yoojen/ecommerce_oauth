@@ -30,21 +30,26 @@ body{
     box-shadow: 0 0px 2px #000;
     color: black;
 }
-.each-tag{
+.login-each-tag, .each-tag{
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-top: 10px;
 }
 
-.each-tag input{
+.login-each-tag input{
     padding: 5px;
     width: 70%;
     color: grey;
 }
+.each-tag input{
+    padding: 5px;
+    width: 50%;
+    color: grey;
+}
 .each-tag select{
     padding: 5px;
-    width: 300px;
+    width: 30%px;
     color: grey;
 }
 #login-form button{
