@@ -1,27 +1,24 @@
 from django.http import JsonResponse
+import time
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, HttpResponse
+from django.core.cache import cache
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from .forms import CheckOutForm, UploadForm
-from .models import Order, Product, User
+from .models import Order, Product
 from .decorators import is_admin, has_placed_order, is_not_admin
 
 def home(request):
     template = 'product/home.html'
-    products = Product.objects.all()
-    form = UploadForm()
-    if request.method == 'POST':
-        upload_form = UploadForm(request.POST, request.FILES)
-        if upload_form.is_valid():
-            upload_form.save()
-            messages.success(request=request, message="New Product Uploaded successfully")
-            return render(request=request, template_name=template, context={'products': products})
-        messages.error(request=request, message='Something went wrong')
-        return render(request=request, template_name=template, context={'form': form})
-    return render(request=request, template_name=template, context={'form': form,
-                                                 'products': products})
+    if cache.get("products", None):
+        products = cache.get("products")
+    else:
+        products = Product.objects.all()
+        cache.set("products", products)
+        print("not from cache")
+    return render(request=request, template_name=template, context={'products': products})
 
 @is_admin
 @login_required
@@ -129,7 +126,6 @@ def orders(request):
     from django.shortcuts import get_list_or_404
     if request.user.is_authenticated:
         orders = Order.objects.filter(user=request.user).all()
-        print(orders)
         return HttpResponse({"message": str(orders)})
     else:
         return HttpResponse({"message": "error"})
