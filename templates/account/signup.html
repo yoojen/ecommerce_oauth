@@ -7,15 +7,15 @@
     {% if not SOCIALACCOUNT_ONLY %}
         <form action="{% url 'account_signup' %}" method="post" id="register-form">
             {%csrf_token%}
-            <div class="each-tag">
+            <div class="login-each-tag">
                 <label for="email">Email</label>
                 {{form.email}}
             </div>
-            <div class="each-tag">
+            <div class="login-each-tag">
                 <label for="password1">Enter password</label>
                 {{form.password1}}
             </div>
-            <div class="each-tag">
+            <div class="login-each-tag">
                 <label for="password2">Enter password again</label>
                 {{form.password2}}
             </div>

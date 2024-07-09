@@ -8,11 +8,11 @@
         {% url 'account_login' as login_url %}
         <form action="{% url 'account_login' %}" method="post" id="login-form">
             {%csrf_token%}
-            <div class="each-tag">
+            <div class="login-each-tag">
                 <label for="login">Email</label>
                 {{form.login}}
             </div>
-            <div class="each-tag">
+            <div class="login-each-tag">
                 <label for="password">Password</label>
                 {{form.password}}
             </div>
