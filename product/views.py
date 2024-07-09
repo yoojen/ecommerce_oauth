@@ -1,10 +1,12 @@
 from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, HttpResponse
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
-from .forms import CheckOutForm, OrderForm, UploadForm
-from .models import BillingAddress, Order, Product
+from .forms import CheckOutForm, UploadForm
+from .models import Order, Product, User
+from .decorators import is_admin, has_placed_order, is_not_admin
 
 def home(request):
     template = 'product/home.html'
@@ -21,7 +23,8 @@ def home(request):
     return render(request=request, template_name=template, context={'form': form,
                                                  'products': products})
 
-
+@is_admin
+@login_required
 def add_product(request):
     template = 'product/add_product.html'
     form = UploadForm()
@@ -37,17 +40,15 @@ def add_product(request):
                 return render(request, 'product/home.html', {'form': form})
         return render(request=request, template_name=template, context={'form': form})
     except Exception as e:
-        print(e)
-        return HttpResponse({})
+        return HttpResponse(str(e))
 
-
+@is_not_admin
 def add_to_cart(request):
     try:
         product_id = request.POST.get('product_id')
         product = Product.objects.get(id=product_id)
         cart = request.session.get('cart', {})
         if product_id not in cart.keys():
-            print(f"{product_id} not found in {cart.keys()}")
             cart[product_id] = {
                 'name': product.name,
                 'price': str(product.price),
@@ -55,8 +56,6 @@ def add_to_cart(request):
             }
         else:
             cart[product_id]['quantity'] = int(cart[product_id]['quantity']) + 1
-            print(cart[product_id]['price'], int(
-                cart[product_id]['quantity']))
             cart[product_id]['price'] =\
                 (int(cart[product_id]['price']) *
                  int(cart[product_id]['quantity']))
@@ -67,6 +66,7 @@ def add_to_cart(request):
         messages.error(request=request, message="Item not added to cart, try again")
         return JsonResponse({"error": "No product found"}, status=404)
 
+@is_not_admin
 def view_cart(request):
     template = 'product/cart.html'
     cart = request.session.get('cart', {})
@@ -81,7 +81,7 @@ def view_cart(request):
 
     return render(request=request, template_name=template, 
                   context={'cart': request.session['cart'].values() if cart else None})
-
+@login_required
 def check_out(request):
     c_form = CheckOutForm()
     session_data = request.session.get('cart', {})
@@ -97,25 +97,34 @@ def check_out(request):
 
     if request.method == 'POST':
         c_form = CheckOutForm(request.POST)
-        obj = c_form
-        c_form.data["user_id"]=1
-        # o_form = OrderForm(request.POST)
-        print("ABove validation")
         if c_form.is_valid():
-            c_form.save()
-            request.session['cart'] = {}
-            request.session.modified = True
-            data = {}
-            messages.success(request, "Order Placeed successfully")
-            send_mail("Order information", f"{request.build_absolute_uri() } \
+            province = c_form.cleaned_data["province"]
+            district = c_form.cleaned_data["district"]
+            sector = c_form.cleaned_data["sector"]
+            amount_payed = c_form.cleaned_data["amount_payed"]
+            payment_method = c_form.cleaned_data["payment_method"]
+            # Process payment provider transactions
+            order, placed = Order.objects.get_or_create(user=request.user, province=province, district=district,
+                                                        sector=sector, amount_payed=amount_payed, payment_method=payment_method)
+            if placed:
+                request.session['cart'] = {}
+                request.session.modified = True
+                data = {}
+                messages.success(request, "Order Placeed successfully")
+                send_mail("Order information", f"{request.build_absolute_uri() } \
                     want to inform you that your order has been placed successfully.\
                     It may take up two 24 hours to get your order dispatched.\
-                    Thank your working with us!", settings.DEFAULT_FROM_EMAIL, ["yoojen28@gmail.com"])
+                    Thank your working with us!", settings.DEFAULT_FROM_EMAIL, ["yoojen28@gmail.com"]
+                )
+            else:
+                messages.error("order not placed")
         else:
             messages.error(request, "Something went wrong")
     return render(request, 'product/checkout.html', {'data': data if data else None,
                                                      'c_form': c_form})
 
+@has_placed_order
+@login_required
 def orders(request):
     from django.shortcuts import get_list_or_404
     if request.user.is_authenticated:

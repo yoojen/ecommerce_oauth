@@ -62,22 +62,17 @@ class Cart(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE, related_name='user')
     date_added=models.DateTimeField(auto_now_add=True)
 
+PAYMENT_CHOICES = (
+    ("MTN Rwanda", "MTN Mobile Money"),
+    ("Airtel Rwanda", "Airtel Money " )
+    )
 
-class BillingAddress(models.Model):
+
+class Order(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     province = models.CharField(max_length=256)
     district = models.CharField(max_length=256,)
     sector = models.CharField(max_length=256)
     date_created = models.DateTimeField(auto_now_add=True)
-
-
-PAYMENT_CHOICES = (
-    ("MTN Rwanda", "MTN Mobile Money"),
-    ("Airtel Rwanda", "Airtel Money " )
-    )
-class Order(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    billing_address = models.OneToOneField(BillingAddress, on_delete=models.SET_NULL, null=True)
     amount_payed=models.CharField(max_length=256)
     payment_method = models.CharField(choices=PAYMENT_CHOICES, max_length=256)
-    date_created = models.DateTimeField(auto_now_add=True)
