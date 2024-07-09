@@ -19,7 +19,26 @@
         {% endif %}
         <form action="{% url 'product:add_product' %}" method="POST" enctype="multipart/form-data">
             {%  csrf_token %}
-            {{form.as_p}}
+            <div class="each-tag">
+                <label for="id_name">Product Name</label>
+                {{form.name}}
+            </div>
+             <div class="each-tag">
+                <label for="id_type">Product Type</label>
+                {{form.type}}
+             </div>
+            <div class="each-tag">
+                <label for="id_category">Product Category</label>
+                {{form.category}}
+            </div>
+             <div class="each-tag">
+                <label for="id_price">Product Price</label>
+                {{form.price}}
+             </div>
+            <div class="each-tag">
+                <label for="id_image">Product Image</label>
+                {{form.image}}
+            </div>
             <input type="submit" value="Upload">
         </form>
     {% endblock %}

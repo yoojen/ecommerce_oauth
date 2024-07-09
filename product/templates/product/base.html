@@ -23,10 +23,16 @@
                     {%  csrf_token %}
                     <input type="submit" value="Logout">
                 </form>
+                {% if user.is_superuser %}
+                    <a href="{% url 'product:add_product' %}">New Product</a>
+                {% endif %}
+                <a href="{% url 'product:orders' %}"></a>
             {% else %}
                 <a href="{% url 'account_login' %}">Login</a>
             {% endif %}
-            <a href="{% url 'product:view_cart' %}">Cart</a>
+            {% if not user.is_superuser %}
+                <a href="{% url 'product:view_cart' %}">Cart</a>
+            {% endif %}
         </div>
     </nav>
     {% block content %}
