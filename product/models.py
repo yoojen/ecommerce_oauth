@@ -25,7 +25,6 @@ class UserCustomerManager(UserManager):
         if extra_fields.get("is_superuser") is not True:
             raise ValueError("Superuser must have is_superuser=True.")
         return self.create_user(email, password, **extra_fields)
-    from allauth.account.utils import send_email_confirmation
 
 class User(AbstractUser):
     email = models.EmailField(unique=True, null=False)
@@ -76,3 +75,40 @@ class Order(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     amount_payed=models.CharField(max_length=256)
     payment_method = models.CharField(choices=PAYMENT_CHOICES, max_length=256)
+
+
+class Message(models.Model):
+    body=models.TextField()
+    sent_by=models.CharField(max_length=255)
+    created_at=models.DateTimeField(auto_now_add=True)
+    created_by=models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL)
+
+    class Meta:
+        ordering=('created_at',)
+
+    def __str__(self) -> str:
+        return f"{self.created_at}"
+    
+class Room(models.Model):
+    WAITING = 'waiting'
+    ACTIVE = 'active'
+    CLOSED = 'closed'
+
+    CHOICES_STATUS = (
+        (WAITING, 'waiting'),
+        (ACTIVE, 'active'),
+        (CLOSED, 'closed')
+    )
+    uuid=models.CharField(max_length=255, primary_key=True)
+    client=models.CharField(max_length=255)
+    agent=models.ForeignKey(User, related_name="room", blank=True, null=True, on_delete=models.SET_NULL)
+    messages=models.ManyToManyField(Message, blank=True)
+    url=models.CharField(max_length=255, blank=True, null=True)
+    status = models.CharField(max_length=255, choices=CHOICES_STATUS, default=WAITING)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering=("created_at", )
+
+    def __str__(self) -> str:
+        return f"{self.client}"
