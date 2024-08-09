@@ -99,7 +99,7 @@ class Room(models.Model):
         (ACTIVE, 'active'),
         (CLOSED, 'closed')
     )
-    uuid=models.CharField(max_length=255, primary_key=True)
+    uuid=models.CharField(max_length=255)
     client=models.CharField(max_length=255)
     agent=models.ForeignKey(User, related_name="room", blank=True, null=True, on_delete=models.SET_NULL)
     messages=models.ManyToManyField(Message, blank=True)

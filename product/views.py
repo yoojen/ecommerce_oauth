@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-import time
+from django.views.decorators.http import require_POST
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, HttpResponse
 from django.core.cache import cache
@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 from .forms import CheckOutForm, UploadForm
-from .models import Order, Product
+from .models import Order, Product, Room
 from .decorators import is_admin, has_placed_order, is_not_admin
 
 def home(request):
@@ -28,6 +28,7 @@ def add_product(request):
     try:
         if request.method == 'POST':
             upload_form = UploadForm(request.POST, request.FILES)
+            print(upload_form)
             if upload_form.is_valid():
                 upload_form.save()
                 messages.success(request, "New Product Uploaded successfully")
@@ -129,3 +130,24 @@ def orders(request):
         return HttpResponse({"message": str(orders)})
     else:
         return HttpResponse({"message": "error"})
+    
+
+def manage_rooms(request):
+    rooms = Room.objects.filter(status=Room.WAITING).all()
+    return render(request, 'product/manage_rooms.html', {'rooms': rooms})
+
+
+@require_POST
+def create_room(request, uuid):
+    name = request.POST.get('name', '')
+    url = request.POST.get('url', '')
+    try:
+        room = Room.objects.create(uuid=uuid, client=name, url=url)
+        return JsonResponse({"message": f"Room created {room.uuid}"})
+    except Exception as e:
+        return JsonResponse({"error": "Failed to creat room"})
+
+
+def single_room(request, uuid):
+    room = Room.objects.filter(uuid=uuid).first()
+    return render(request, 'product/single_room.html', {'room': room})
