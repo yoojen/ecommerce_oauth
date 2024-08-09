@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'product/styles.css' %}">
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
     {% if title %}
         {{title}}
     {% else %}
@@ -25,6 +28,7 @@
                 </form>
                 {% if user.is_superuser %}
                     <a href="{% url 'product:add_product' %}">New Product</a>
+                    <a href="{% url 'product:manage_rooms' %}">Manage Rooms</a>
                 {% endif %}
                 <a href="{% url 'product:orders' %}"></a>
             {% else %}
@@ -36,7 +40,7 @@
         </div>
     </nav>
     {% block content %}
-    
+        
     {% endblock %}
 </body>
 </html>

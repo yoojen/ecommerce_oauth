@@ -1,0 +1,18 @@
+{% extends "product/base.html" %}
+
+{% block content %}
+    <div class="container">
+        <div id="chat_room" class="mt-5 mh-100">
+            <div id="chat_messages">
+                <p>Hello! We are pleased to have you here.</p>
+
+                <div id="chat_logs">
+                </div>
+            </div>
+            <div id="msg">
+                <textarea type="text" id="chat_msg" class="h-25"> </textarea>
+                <button id="send_message" style="background-color: lightskyblue; color: white; padding: 7px 10px">Send</button>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,0 +1,42 @@
+{% extends "product/base.html" %}
+
+{% block content %}
+    {% if messages %}
+        {% for msg in messages %}
+            {% if msg.tags == 'error' %}
+                <p style="background-color: red; color: white">{{msg}}</p>
+            {% else %}
+            <p style="color: blue">{{msg}}</p>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <div class="container-fluid">
+        <h1> ONGOING ROOMS </h1>
+        <div class="row d-flex flex-wrap justify-content-center">
+            {% for room in rooms %}
+                <div class="col-3 mt-1 mb-1 mx-1">
+                    <div class="card">
+                        <div class="card-header">
+                            <small>Room Id: {{room.uuid}}</small><br>
+                            <div>
+                                {% if room.status == 'waiting' %}
+                                    <small>Room status: <span class="bg-warning">{{room.status}}</span></small>
+                                {% elif room.status == "active" %}
+                                    <small> Room status: <span class="bg-primary p-2">{{room.status}}</span></small>
+                                {% endif %}
+                            </div>
+                            <small>Client: {{room.client}}</small>
+                        </div>
+                        <div class="card-body">
+                            <p>{{room.message}}</p>
+                            <p>{{room.created_at|timesince}} ago</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-end">
+                            <a href="{% url 'product:single_room' room.uuid %}">Join Room</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
