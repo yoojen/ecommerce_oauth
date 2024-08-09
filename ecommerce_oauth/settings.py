@@ -34,6 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'bootstrap5',
     'product',
     'allauth',
     'allauth.account',
@@ -64,7 +66,7 @@ MIDDLEWARE = [
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
 TEMPLATES = [
@@ -85,6 +87,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'ecommerce_oauth.wsgi.application'
+ASGI_APPLICATION = "ecommerce_oauth.asgi.application"
 
 AUTH_USER_MODEL='product.User'
 USER_MODEL_USERNAME_FIELD = 'email'
@@ -110,6 +113,12 @@ AUTHENTICATION_BACKENDS = [
     # `allauth` specific authentication methods, such as login by email
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -155,8 +164,8 @@ SOCIALACCOUNT_PROVIDERS = {
     },
     'google': {
         'APP': {
-            'client_id': os.environ.get("GOOGLE_ID"),
-            'secret': os.environ.get("GOOGLE_SECRET_KEY"),
+            'client_id': "424659524342-2bdseicd6rlfvvvkh98j1kquqgnekoja.apps.googleusercontent.com",
+            'secret': "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",
             'key': ''
         },
         'SCOPE': [
