@@ -120,34 +120,7 @@ nav input{
 .right-nav *{
     margin-right: 10px;
 }
-.container .product{
-    width: 27%;
-    height: 400px;
-    margin: 2px;
-    cursor: pointer;
-    transition: 1s all;
-}
 
-.container .product img{
-    object-fit: cover;
-    width: 100%;
-    height: 80%;
-}
-
-.product .desc{
-    height: 20%;
-}
-
-.product .desc a{
-    background-color: lightgrey;
-    width: 100%;
-    display: block;
-    padding: 5px 10px;
-    text-decoration:  none;
-    color: black;
-    font-weight: 800;
-    text-align: center;
-}
 .product .desc a:hover{
     color: orange;
     background-color: black;
@@ -156,18 +129,6 @@ nav input{
     width: 30%;
 }
 
-h1{
-    text-align: center;
-    margin: 10px 0;
-    color: white;
-}
-
-.border-bottom{
-    margin: 2px 0;
-    height: 1px;
-    width: 100%;
-    background-color: lightskyblue;
-}
 
 .cart{
     background-color: rgb(10, 170, 239);
@@ -203,38 +164,4 @@ svg{
     padding: 10px;
     color: rosybrown;
     font-weight: 800;
-}
-
-#chat{
-    position: fixed;
-    bottom: 10px;
-    right: 1px;
-    height: 50%;
-}
-
-#msg_center{
-    margin: 10px;
-    border-radius: 5px;
-    border: 2px solid rgb(146, 145, 145);
-    background-color: white;
-    padding: 10px;
-}
-
-#msg_center input, #chat_room input{
-    padding: 5px 10px;
-}
-
-#chat_room{
-    display: none;
-    background-color: white;
-    border: 2px solid rosybrown;
-    padding: 10px;
-    height: 300px;
-    border-radius: 5px;
-}
-
-#chat_icon, #msg_center, #msg{
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
 }
