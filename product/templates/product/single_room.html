@@ -1,18 +1,52 @@
 {% extends "product/base.html" %}
-
+{% load static %}
 {% block content %}
-    <div class="container">
+    <div class="container-fluid">
+        <div class="card-header">
+            <small>Room Id: {{room.uuid}}</small><br>
+            <div>
+                {% if room.status == 'waiting' %}
+                    <small>Room status: <span class="bg-warning">{{room.status}}</span></small>
+                {% elif room.status == "active" %}
+                    <small> Room status: <span class="bg-primary p-2">{{room.status}}</span></small>
+                {% endif %}
+            </div>
+            <div>
+                <small>Started: {{room.created_at|timesince}}</small>
+            </div>
+            <div>
+                <small>Client: {{room.client}}</small>
+            </div>
+            <div>
+                <small>Agent: {% firstof room.agent 'Not yet' %}</small>
+            </div>
+        </div>
         <div id="chat_room" class="mt-5 mh-100">
             <div id="chat_messages">
-                <p>Hello! We are pleased to have you here.</p>
+
+                <p>Hello! We are pleased to have you here. <span><b>RoomId: {{room.uuid}}</b></span></p>
 
                 <div id="chat_logs">
                 </div>
             </div>
             <div id="msg">
+                <div class="messages">
+                   {% for msg in messages %}
+                        <div> {{msg}} </div>
+                   {% endfor %}
+                </div>
+                <label>Type your message here</label>
                 <textarea type="text" id="chat_msg" class="h-25"> </textarea>
                 <button id="send_message" style="background-color: lightskyblue; color: white; padding: 7px 10px">Send</button>
             </div>
         </div>
     </div>
+    {% if room.status == 'active' %}
+        <small id="chat_uuid" class="d-none">{{room.uuid}}</small>
+        <small id="chat_name" class="d-none">{{room.client}} </small>
+        <small id="agent_id" class="d-none">{{room.agent.id}}</small>
+        
+        <script src="{% static 'product/room.js' %}"></script>
+    {% endif %}
+    
 {% endblock content %}

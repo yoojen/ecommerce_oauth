@@ -133,7 +133,7 @@ def orders(request):
     
 
 def manage_rooms(request):
-    rooms = Room.objects.filter(status=Room.WAITING).all()
+    rooms = Room.objects.filter(status__in=[Room.WAITING, Room.ACTIVE]).all()
     return render(request, 'product/manage_rooms.html', {'rooms': rooms})
 
 
@@ -141,13 +141,23 @@ def manage_rooms(request):
 def create_room(request, uuid):
     name = request.POST.get('name', '')
     url = request.POST.get('url', '')
+    print(request.POST)
     try:
         room = Room.objects.create(uuid=uuid, client=name, url=url)
-        return JsonResponse({"message": f"Room created {room.uuid}"})
+        return JsonResponse({"message": f"Room created"})
     except Exception as e:
         return JsonResponse({"error": "Failed to creat room"})
 
 
 def single_room(request, uuid):
     room = Room.objects.filter(uuid=uuid).first()
-    return render(request, 'product/single_room.html', {'room': room})
+
+    if room.status == Room.WAITING:
+        room.status = Room.ACTIVE
+        room.agent = request.user
+        room.save()
+    
+    return render(request, 'product/single_room.html', {
+        'room': room,
+        'messages': room.messages.all()
+        })

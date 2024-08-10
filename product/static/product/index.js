@@ -51,75 +51,61 @@ function getCookie(cookiename) {
   return cookieValue
 }
 
-async function joinChatRoom() {
+function joinChatRoom() {
   chatRoomName = chatNameElement.value;
   console.log("Room uuid", chatRoomUuid);
 
-  console.log("Joined as:", chatRoomUuid);
-  console.log("Cookie: ", getCookie('csrftoken'))
-  const res = await fetch(`/create-room/${chatRoomUuid}`, {
-    method: 'POST',
-    headers: {
-      'X-CSRFToken': getCookie('csrftoken'),
-      'Content-Type': 'application/x-www-form-url-encoded; charset=UTF-8'
-    },
+  fetch(`/create-room/${chatRoomUuid}/`, {
+    method: "POST",
     body: new URLSearchParams({
-      'name': chatRoomName,
-      'url': windowURL
-    })
+      name: chatRoomName,
+      url: windowURL,
+    }),
+    headers: {
+      "X-CSRFToken": getCookie("csrftoken"),
+    },
   })
-  const data = await res.json()
-  console.log(data)
+    .then((response) => response.text()) // Read response as text
+    .then((data) => console.log(data)); // Alert the response
+
   chatSocket = new WebSocket(`ws://${windowURL}/ws/chat/${chatRoomName}`)
 
-  chatSocket.onmessage = function (e) {
-    console.log("On message");
-
-    receiveMessage(JSON.parse(e.data));
+  chatSocket.onmessage = (e) => {
+    console.log(JSON.parse(e.data)["type"]);
+    receiveMessages(JSON.parse(e.data));
+    console.log("On message")
   }
 
-  chatSocket.onopen = function (e) {
-    console.log("On open");
+  chatSocket.onclose = (e) => {
+    console.log("CLosed unexpectedly");
   }
 
-  chatSocket.onclose = function (e) {
-    console.log("On close");
+  chatSocket.onopen = (e) => {
+    console.log("Chat created/opened");
   }
 }
 
+function receiveMessages(data) {
+  console.log(data)
+  chatLogsElement.innerHTML += `
+    <div class="msg_back">
+      <p>Received new message</p>
+    </div>
+  `;
+}
 
-function sendMessage() {
-  console.log(chatRoomName);
+const sendMessage = () => {
   chatSocket.send(
     JSON.stringify({
       "type": "message",
-      "message": actualMessage.value,
+      "message":actualMessage.value,
       "name": chatRoomName
     })
-  );
+  )
+
   actualMessage.value = ''
 }
 
-function receiveMessage(data) {
-  console.log("Now prinint gmessages", data);
-  if (data.type == "chat_message") {
-    if (data.agent) {
-      chatLogsElement.innerHTML += `
-        <div class="agent">
-          <div class="initials">${data.initials}</div>
-          <div class="chat-message">${data.message}</div>
-        <div/>
-      `;
-    } else {
-      chatLogsElement.innerHTML += `
-        <div class="client">
-          <div class="initials">${data.initials}</div>
-          <div class="chat-message">${data.message}</div>
-        <div/>
-      `;
-    }
-  }
-}
 /**
  * Event listners
  */

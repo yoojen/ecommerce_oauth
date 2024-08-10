@@ -25,7 +25,12 @@
                                     <small> Room status: <span class="bg-primary p-2">{{room.status}}</span></small>
                                 {% endif %}
                             </div>
-                            <small>Client: {{room.client}}</small>
+                            <div>
+                                <small>Client: {{room.client}}</small>
+                            </div>
+                            <div>
+                                <small>Agent: {% firstof room.agent 'Not yet' %}</small>
+                            </div>
                         </div>
                         <div class="card-body">
                             <p>{{room.message}}</p>

@@ -5,6 +5,7 @@ from asgiref.sync import sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 from .templatetags.roomextras import initials
+from .models import Message, User, Room
 
 class ChatConsumer(AsyncWebsocketConsumer):
 
@@ -13,7 +14,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.room_group_name=f'chat_{self.room_name}'
 
         # Join room
-
+        await self.get_room()
+        print("from connect: ", self.room)
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
     
@@ -24,6 +26,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data=None, bytes_data=None):
         # Receive message from client
         text_data_json = json.loads(text_data)
+        print(text_data)
         type = text_data_json["type"]
         message = text_data_json["message"]
         name = text_data_json["name"]
@@ -32,6 +35,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         print("Received: ", type)
         if type == "message":
             #Send message to room
+            new_message = await self.create_message(name, message, agent)
             await self.channel_layer.group_send(self.room_group_name,{
                 "type":"chat_message",
                 "message": message,
@@ -51,3 +55,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
             "initials": event["initials"],
             "created_at": event["created_at"]
         }))
+    
+    @sync_to_async
+    def get_room(self):
+        self.room = Room.objects.filter(uuid=self.room_name).first()
+
+    @sync_to_async    
+    def create_message(self, sent_by, message, agent):
+        message = Message.objects.create(body=message, sent_by=sent_by)
+
+        if agent:
+            message.created_by=User.objects.get(pk=agent)
+            message.save()
+        
+        self.room = Room.objects.filter(client=self.room_name).first()
+        self.room.messages.add(message)
+
+        return message

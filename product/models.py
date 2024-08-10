@@ -86,8 +86,8 @@ class Message(models.Model):
     class Meta:
         ordering=('created_at',)
 
-    def __str__(self) -> str:
-        return f"{self.created_at}"
+    # def __str__(self) -> str:
+    #     return f"{self.created_at}"
     
 class Room(models.Model):
     WAITING = 'waiting'
@@ -110,5 +110,5 @@ class Room(models.Model):
     class Meta:
         ordering=("created_at", )
 
-    def __str__(self) -> str:
-        return f"{self.client}"
+    # def __str__(self) -> str:
+    #     return f"{self.client}"

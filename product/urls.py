@@ -8,7 +8,7 @@ urlpatterns=[
     path('add-t-cart/', views.add_to_cart, name='add_to_cart'),
     path('view-cart/', views.view_cart, name='view_cart'),
     path('orders/', views.orders, name='orders'),
-    path('create-room/<str:uuid>', views.create_room, name='create_room'),
+    path('create-room/<str:uuid>/', views.create_room, name='create_room'),
     path('manage-room/', views.manage_rooms, name='manage_rooms'),
-    path('single-room/<str:uuid>', views.single_room, name='single_room'),
+    path('single-room/<str:uuid>/', views.single_room, name='single_room'),
 ]
